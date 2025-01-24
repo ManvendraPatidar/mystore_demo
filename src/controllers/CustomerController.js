@@ -25,7 +25,6 @@ const add_customer_controller = async (req, res) => {
 };
 
 const getAllCustomerController = async (req, res) => {
-  console.log("customers all customer");
   try {
     const customers = await Customer.findAll();
 
@@ -33,6 +32,7 @@ const getAllCustomerController = async (req, res) => {
 
     res.status(200).json({
       message: "fetch all customers",
+      total_customer: customers.length,
       customer_list: customers,
     });
   } catch (error) {
@@ -110,13 +110,6 @@ const updateCustomerController = async (req, res) => {
       phone,
     });
 
-    // After updating, fetch the updated customer from the database
-    // const updatedCustomer = await customer.reload(); // Reload the updated data
-
-    // // Log the updated customer instance
-    // console.log("---customer after update", updatedCustomer);
-
-    // Send response with the updated user data
     res.status(200).json(updatedCustomer);
   } catch (error) {
     console.error(error);

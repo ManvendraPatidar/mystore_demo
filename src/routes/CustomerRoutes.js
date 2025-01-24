@@ -11,10 +11,15 @@ const {
   deleteCustomerController,
   updateCustomerController,
 } = require("../controllers/CustomerController");
+const { jwtCheckMiddleware } = require("../middlewares/JwtCheckMiddleware");
 
 const customerRouter = express.Router();
 
-customerRouter.get("/getAllCustomers", getAllCustomerController);
+customerRouter.get(
+  "/getAllCustomers",
+  jwtCheckMiddleware,
+  getAllCustomerController
+);
 
 customerRouter.post(
   "/createCustomer",
