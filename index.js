@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const sequelize = require("./src/db");
 const routers = require("./src/routes");
+const { associations } = require("./src/association");
 const app = express();
 
 // Load environment variables from .env file
@@ -38,6 +39,8 @@ app.use("/api", routers);
 app.get("/", (req, res) => {
   res.send("Hello, Express and Sequelize with PostgreSQL! All Set Ready to go");
 });
+
+associations();
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
