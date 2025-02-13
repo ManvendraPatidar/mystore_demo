@@ -19,6 +19,4 @@ const Authentication = sequelize.define("Authentication", {
   },
 });
 
-module.exports = {
-  Authentication,
-};
+module.exports = { Authentication };

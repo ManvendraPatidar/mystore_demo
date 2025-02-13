@@ -58,7 +58,8 @@ const login_controller = async (req, res) => {
       return res.status(200).json({ message: "Invalid password" });
     }
 
-    const token = jwt.sign({ phone }, process.env.JWT_SECRET, {
+    const id = user.id;
+    const token = jwt.sign({ id, phone }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 

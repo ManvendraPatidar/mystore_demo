@@ -1,10 +1,10 @@
 const Customer = require("../models/Customer");
 
 const add_customer_middleware = (req, res, next) => {
-  const { name, age, phone } = req.body;
+  const { name, age } = req.body;
   console.log(req.body);
 
-  if (name && age && phone) {
+  if (name && age) {
     if (!name.trim() || age < 18) {
       return res.status(400).json({
         message: "operation failed",

@@ -1,34 +1,48 @@
-// import Customer from;
-const Customer = require("../models/Customer");
+const sequelize = require("../db");
+const { Authentication } = require("../models/Authentication");
+const { BankAccount } = require("../models/BankAccount");
+const { Customer } = require("../models/Customer");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const add_customer_controller = async (req, res) => {
-  const { name, age, email, phone } = req.body;
+  const { name, age, email, authId } = req.body;
 
   try {
+    const token = req.header("Authorization")?.replace("Bearer ", "");
+
+    console.log("Token", token);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded Token: authId ", decoded);
+
     const customer = await Customer.create({
       name: name,
       age: age,
       email: email || null,
-      phone: phone,
+      authId: decoded?.id,
     });
 
-    console.log("customer : --->", customer);
     res.status(201).json({
       message: "customer created successfully",
       customer,
     });
   } catch (error) {
     res.status(500).json({
-      error: error?.errors[0]?.message,
+      error: error,
     });
   }
 };
 
 const getAllCustomerController = async (req, res) => {
-  try {
-    const customers = await Customer.findAll();
+  console.log("--", 1);
 
-    console.log(customers);
+  try {
+    const customers = await Customer.findAll({
+      include: {
+        model: Authentication,
+      },
+    });
+    console.log("--");
 
     res.status(200).json({
       message: "fetch all customers",
@@ -37,8 +51,8 @@ const getAllCustomerController = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: "failed to fetch customer list",
-      error: error,
+      message: "failed to fetch customer list__",
+      error,
     });
   }
 };
@@ -116,10 +130,40 @@ const updateCustomerController = async (req, res) => {
     res.status(500).json({ message: "Error updating user", error });
   }
 };
+
+const addBankAccountController = async (req, res) => {
+  const { userId, accountNumber, bankName, IFCCode } = req.body;
+
+  console.log(req.body);
+  if (userId && accountNumber && bankName && IFCCode) {
+    try {
+      const account = await BankAccount.create({
+        userId: userId,
+        accountNumber: accountNumber,
+        bankName,
+        IFCCode,
+      });
+
+      return res.status(201).json({
+        message: "Acccount Added successfully",
+        account,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error,
+      });
+    }
+  }
+
+  res.status(500).json({
+    error: error,
+  });
+};
 module.exports = {
   add_customer_controller,
   getAllCustomerController,
   getCustomerById,
   updateCustomerController,
   deleteCustomerController,
+  addBankAccountController,
 };

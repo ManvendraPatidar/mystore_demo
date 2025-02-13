@@ -20,11 +20,18 @@ const Customer = sequelize.define("Customer", {
     allowNull: true,
     unique: true,
   },
-  phone: {
+  authId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true,
+    unique: true, // Ensure the authId is unique for each customer
+  },
+  accountId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    unique: true, // Ensure the authId is unique for each customer
   },
 });
 
-module.exports = Customer;
+module.exports = {
+  Customer,
+};
